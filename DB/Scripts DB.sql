@@ -1,17 +1,30 @@
+DROP SCHEMA IF EXISTS `AbuelApp` ;
+CREATE SCHEMA IF NOT EXISTS `AbuelApp` ;
+USE `AbuelApp` ;
+
 CREATE TABLE `abuelo` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario` varchar(255) NOT NULL,
+  `contra` varchar(255) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL,
+  `tel` varchar(255) NULL,
+  `celular` varchar(255) NOT NULL,
   `direccion` varchar(255) NOT NULL,
   `sexo` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `ayudante` varchar(255) NULL,
+  PRIMARY KEY (`usuario`)
 );
 
 CREATE TABLE `voluntario` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `usuario` varchar(255) NOT NULL,
+  `contra` varchar(255) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL,
+  `tel` varchar(255) NULL,
+  `celular` varchar(255) NOT NULL,
   `direccion` varchar(255) NOT NULL,
   `sexo` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `disponibilidad` TINYINT NOT NULL DEFAULT 0,
+  `peticionAyuda` varchar(255) NULL,
+  PRIMARY KEY (`usuario`)
 );
