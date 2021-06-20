@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+DB/__pycache__/
+DB/*.pyc
+BACK_END/__pycache__/
+BACK_END/*.pyc
+UI/__pycache__/
+UI/*.pyc
