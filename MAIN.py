@@ -1,4 +1,4 @@
-from UI import menu_principal_UI
+from UI.menu_principal_UI import MenuPrincipal
 
-a = menu_principal_UI.MenuPrincipal()
-a.imprimirMenu()
+menu = MenuPrincipal()
+menu.imprimirMenu()
