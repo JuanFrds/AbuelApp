@@ -1,3 +1,8 @@
+from math import atan2, radians, cos, sin, asin, sqrt, trunc
+from geopy.format import LATIN1_DEGREE
+from geopy.geocoders import Nominatim
+from geopy.distance import great_circle
+
 # CREE UNA VARIABLE 'GLOBAL' PARA NO TENER QUE DECLARARLA EN CADA METODO
 ok = False
 
@@ -23,30 +28,30 @@ def menuConfirmacion(mensaje):
 
 # CREE UNA LISTA CON LOS DEPARTAMENTOS DEL GRAN MENDOZA PARA QUE EL USUARIO ELIJA
 # ESTO LO HICE POR UNA CUESTION DE SIMPLICIDAD DEL PROGRAMA
-def elegir_direccion():
-    lista_direcciones = ["CIUDAD", "GODOY CRUZ", "GUAYMALLÉN", "LAS HERAS", "LUJÁN", "MAIPÚ"]
+# def elegir_direccion():
+#     lista_direcciones = ["CIUDAD", "GODOY CRUZ", "GUAYMALLÉN", "LAS HERAS", "LUJÁN", "MAIPÚ"]
 
-    while not ok:
-        try:
-            limpiarConsola()
-            print("\nSELECCIONE SU DEPARTAMENTO:")
-            print("1: CIUDAD\n2: GODOY CRUZ\n3: GUAYMALLÉN\n4: LAS HERAS\n5: LUJÁN\n6: MAIPÚ")
-            opcion = int(input("\nIngrese el número de su departamento: "))
+#     while not ok:
+#         try:
+#             limpiarConsola()
+#             print("\nSELECCIONE SU DEPARTAMENTO:")
+#             print("1: CIUDAD\n2: GODOY CRUZ\n3: GUAYMALLÉN\n4: LAS HERAS\n5: LUJÁN\n6: MAIPÚ")
+#             opcion = int(input("\nIngrese el número de su departamento: "))
 
-            while opcion < 1 or opcion > 6:
-                opcion = int(
-                    input("\nNúmero de departamento incorrecto.\nVuelva a ingresar el número de su departamento: "))
+#             while opcion < 1 or opcion > 6:
+#                 opcion = int(
+#                     input("\nNúmero de departamento incorrecto.\nVuelva a ingresar el número de su departamento: "))
 
-            #  SE LE RESTA 1 A LA LISTA PARA QUE COINCIDA CON LO QUE INGRESA EL USUARIO
-            direccion = lista_direcciones[opcion - 1]
+#             #  SE LE RESTA 1 A LA LISTA PARA QUE COINCIDA CON LO QUE INGRESA EL USUARIO
+#             direccion = lista_direcciones[opcion - 1]
 
-            print("\nLa dirección seleccionada es:", direccion)
+#             print("\nLa dirección seleccionada es:", direccion)
 
-            if menuConfirmacion("¿Es correcta la dirección?"):
-                return direccion
+#             if menuConfirmacion("¿Es correcta la dirección?"):
+#                 return direccion
 
-        except ValueError:
-            print("\nERROR. ESPACIO EN BLANCO.")
+#         except ValueError:
+#             print("\nERROR. ESPACIO EN BLANCO.")
 
 
 # LO QUE HACE ESTA FUNCION ES VERIFICAR QUE EL NOMBRE O APELLIDO INGRESADO NO SEA DEMASIADO LARGO O CONSISTA DE ESPACIOS EN BLANCO
@@ -95,3 +100,56 @@ def elegir_sexo():
 
         except ValueError:
             print("\nERROR. ESPACIO EN BLANCO\n")
+#Formula que calcula la distancia en KM entre 2 puntos en la tierra:
+def haversine(latlon1,latlon2):
+    R = 6372.8
+
+    latD = radians(latlon2[0] - latlon1[0])
+    lonD = radians(latlon2[1] - latlon1[1])
+
+    lat1 = radians(latlon1[0])
+    lat2 = radians(latlon2[0])
+
+    a = sin(latD/2)**2 + cos(lat1) * cos(lat2) * sin(lonD/2)**2
+    c = 2 * atan2(sqrt(a),sqrt(1-a))
+
+    d = R * c
+
+    return d
+
+def latitudLongitud(direccion):
+    geolocator = Nominatim(user_agent='AbuelApp')
+    loc = geolocator.geocode(direccion)
+    list = [loc.latitude,loc.longitude]
+    return list
+
+def verificarDireccion():
+    try:
+        geolocator = Nominatim(user_agent='AbuelApp')
+        direccion = input(
+                '*Siga el siguiente formato: Calle y numero, Barrio (opcional), Localidad, Departamento, Provincia\n'
+                'Ingrese dirección: '
+                )
+        loc = geolocator.geocode(direccion)
+        if loc.address:
+            return direccion
+    except Exception as e:
+        print('Dirección incorrecta. Verifique y vuelva a ingresarla.')
+        verificarDireccion()
+
+def verificar_contra(contra):
+    contra = str(contra)
+    if contra == '' or len(contra) < 8:
+        return False
+    else:
+        return True
+        
+
+def ingresoContra():
+    contra = str(input('Ingrese un contraseña:'))
+    if verificar_contra(contra):
+        return contra
+    else:
+        print('La contraseña no puede tener menos de 8 caracteres. Intente de nuevo.')
+        ingresoContra()
+
