@@ -9,7 +9,7 @@ def Registro():
         contra = funciones.ingresoContra()
         nombre = funciones.verificar_nombreApellido('nombre')
         apellido = funciones.verificar_nombreApellido('apellido')
-        celular = input('Ingrese un numero de celular:')
+        celular = funciones.verificar_celular()
         direccion = funciones.verificarDireccion()
         sexo =funciones.elegir_sexo()
     else:
@@ -25,15 +25,14 @@ def verMiPerfil(voluntario):
 
 def modificarPerfil(voluntario):
     resp = ''
-    while resp != '6':
+    while resp != '5':
         print('Selecione que datos desea modificar:')
         print(
             'Opción 1:\tNombre\n'+
             'Opción 2:\tApellido\n'+
             'Opción 3:\tCelular\n'+
-            'Opción 4:\tTelefono\n'+
-            'Opción 5:\tDirección\n'+
-            'Opción 6:\tAtras'
+            'Opción 4:\tDirección\n'+
+            'Opción 5:\tAtras'
         )
         resp = input()
         if resp == '1':
@@ -47,21 +46,16 @@ def modificarPerfil(voluntario):
             if funciones.menuConfirmacion('¿Seguro quiere modificar su apellido?'):
                 voluntario.guardar_cambios()
         elif resp == '3':
-            celular = input('Ingrese un numero de celular:')
+            celular = funciones.verificar_celular()
             voluntario.celular = celular
             if funciones.menuConfirmacion('¿Seguro quiere modificar su celular?'):
                 voluntario.guardar_cambios()
         elif resp == '4':
-            telefono = input('Ingrese un numero de telefono:')
-            voluntario.tel = telefono
-            if funciones.menuConfirmacion('¿Seguro quiere modificar su telefono?'):
-                voluntario.guardar_cambios()
-        elif resp == '5':
             direccion = funciones.verificarDireccion()
             voluntario.direccion = direccion
             if funciones.menuConfirmacion('¿Seguro quiere modificar su dirección?'):
                 voluntario.guardar_cambios()
-        elif resp == '6':
+        elif resp == '5':
             print('Saliendo...')
         else:
             print('Tecla incorrecta.')

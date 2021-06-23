@@ -4,12 +4,11 @@ from UI import funciones
 
 class Abuelo:
 
-    def __init__(self, usuario, contra, nombre, apellido, tel, celular, direccion, sexo):
+    def __init__(self, usuario, contra, nombre, apellido, celular, direccion, sexo):
         self.usuario = usuario
         self.contra = contra
         self.nombre = nombre
         self.apellido = apellido
-        self.tel = tel
         self.celular = celular
         self.direccion = direccion
         self.sexo = sexo
@@ -18,9 +17,9 @@ class Abuelo:
     def iniciar_sesion(usuario):
         try:
             dao = DAO()
-            sql = f'select contra, nombre, apellido, tel, celular, direccion, sexo from abuelo where usuario=\'{usuario}\';'
+            sql = f'select contra, nombre, apellido, celular, direccion, sexo from abuelo where usuario=\'{usuario}\';'
             lista = dao.recuperarRegistro(sql)
-            return Abuelo(usuario,lista[0],lista[1],lista[2],lista[3],lista[4], lista[5], lista[6])
+            return Abuelo(usuario,lista[0],lista[1],lista[2],lista[3],lista[4], lista[5])
         except Exception as e:
             print(e)
     
@@ -29,8 +28,8 @@ class Abuelo:
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "INSERT INTO abuelo (usuario, contra, nombre, apellido, tel, celular, direccion, sexo) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}');"
-            sql = sql.format(self.usuario, self.contra, self.nombre, self.apellido, self.tel, self.celular, self.direccion, self.sexo)
+            sql = "INSERT INTO abuelo (usuario, contra, nombre, apellido, celular, direccion, sexo) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}');"
+            sql = sql.format(self.usuario, self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo)
             dao.insertarOActualizar(sql)
         except Exception as e:
             print(e)
@@ -39,8 +38,8 @@ class Abuelo:
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "UPDATE abuelo SET contra = '{0}', nombre = '{1}', apellido = '{2}', tel = '{3}', celular = '{4}', direccion = '{5}', sexo = '{6}' WHERE usuario = '{7}';"
-            sql = sql.format(self.contra, self.nombre, self.apellido, self.tel, self.celular, self.direccion, self.sexo, self.usuario)
+            sql = "UPDATE abuelo SET contra = '{0}', nombre = '{1}', apellido = '{2}', celular = '{3}', direccion = '{4}', sexo = '{5}' WHERE usuario = '{6}';"
+            sql = sql.format(self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo, self.usuario)
             dao.insertarOActualizar(sql)
         except Exception as e:
             print(e)
@@ -48,7 +47,6 @@ class Abuelo:
     def mostrarDatos(self):
         print('Nombre:',self.nombre)
         print('Apellido:',self.apellido)
-        print('Tel.:',self.tel)
         print('Celular:',self.celular)
         print('Dirección:',self.direccion)
         print('Sexo:',self.sexo)
@@ -67,7 +65,7 @@ class Abuelo:
         l = Voluntario.lista_voluntariosDisponibles()
         listaVolDisp = []
         for usr in l:
-            if (funciones.haversine(miLatLong, funciones.latitudLongitud(usr[1]))) <= 1:
+            if (funciones.haversine(miLatLong, funciones.latitudLongitud(usr[1]))) <= 10:
                 listaVolDisp = list(listaVolDisp) + [(usr)]
         return listaVolDisp
 
@@ -82,14 +80,13 @@ class Abuelo:
     def mostrarDatosVoluntario(self, ayudante):
         try:
             dao = DAO()
-            sql = f"SELECT nombre, apellido, celular, tel FROM voluntario WHERE usuario = '{ayudante}'"
+            sql = f"SELECT nombre, apellido, celular FROM voluntario WHERE usuario = '{ayudante}'"
             datos = dao.recuperarRegistro(sql)
             print(
-                'Datos del voluntario para que pueda comunicarse:\n'
+                '\nDatos del voluntario para que pueda comunicarse:\n'
                 'Nombre:',datos[0],'\n'
                 'Apellido:',datos[1],'\n'
-                'Celular:',datos[2],'\n'
-                'Tel.:',datos[3],
+                'Celular:',datos[2],
                     )
         except Exception as e:
             print(e)
@@ -100,10 +97,15 @@ class Abuelo:
             sql = f"SELECT ayudante FROM abuelo WHERE usuario = '{self.usuario}';"
             ayudante = dao.recuperarRegistro(sql)
             if ayudante[0] != None and ayudante[0] != '0':
+                print(
+                '\n¡ATENCION! han respondido a su petición de ayuda:\n'
+                f'El usuario {ayudante[0]} ha aceptado su peticion de ayuda.'
+                )
                 self.mostrarDatosVoluntario(ayudante[0])
                 return 'aceptado'
             elif ayudante[0] == '0':
-                print('El voluntario a rechazado su pedido')
+                print('\n¡ATENCION! han respondido a su petición de ayuda')
+                print(f'\nEl voluntario {ayudante[0]} a rechazado su pedido')
                 return 'rechazado'
             else: return 'sigue'
         except Exception as e:

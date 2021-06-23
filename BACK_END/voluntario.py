@@ -3,12 +3,11 @@ from DB.conexion import DAO
 
 class Voluntario:
 
-    def __init__(self, usuario, contra, nombre, apellido, tel, celular, direccion, sexo):
+    def __init__(self, usuario, contra, nombre, apellido, celular, direccion, sexo):
         self.usuario = usuario
         self.contra = contra
         self.nombre = nombre
         self.apellido = apellido
-        self.tel = tel
         self.celular = celular
         self.direccion = direccion
         self.sexo = sexo
@@ -18,9 +17,9 @@ class Voluntario:
     def iniciar_sesion(usuario):
         try:
             dao = DAO()
-            sql = f'select contra, nombre, apellido, tel, celular, direccion, sexo, disponibilidad from voluntario where usuario=\'{usuario}\';'
+            sql = f'select contra, nombre, apellido, celular, direccion, sexo, disponibilidad from voluntario where usuario=\'{usuario}\';'
             lista = dao.recuperarRegistro(sql)
-            return Voluntario(usuario,lista[0],lista[1],lista[2],lista[3],lista[4], lista[5], lista[6])
+            return Voluntario(usuario,lista[0],lista[1],lista[2],lista[3],lista[4], lista[5])
         except Exception as e:
             print(e)     
 
@@ -28,8 +27,8 @@ class Voluntario:
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "INSERT INTO voluntario (usuario, contra, nombre, apellido, tel, celular, direccion, sexo, disponibilidad) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','0');"
-            sql = sql.format(self.usuario, self.contra, self.nombre, self.apellido, self.tel, self.celular, self.direccion, self.sexo)
+            sql = "INSERT INTO voluntario (usuario, contra, nombre, apellido, celular, direccion, sexo, disponibilidad) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','0');"
+            sql = sql.format(self.usuario, self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo)
             dao.insertarOActualizar(sql)
         except Exception as e:
             print(e) 
@@ -38,8 +37,8 @@ class Voluntario:
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "UPDATE voluntario SET contra = '{0}', nombre = '{1}', apellido = '{2}', tel = '{3}', celular = '{4}', direccion = '{5}', sexo = '{6}' WHERE usuario = '{7}';"
-            sql = sql.format(self.contra, self.nombre, self.apellido, self.tel, self.celular, self.direccion, self.sexo, self.usuario)
+            sql = "UPDATE voluntario SET contra = '{0}', nombre = '{1}', apellido = '{2}', celular = '{4}', direccion = '{5}', sexo = '{6}' WHERE usuario = '{7}';"
+            sql = sql.format(self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo, self.usuario)
             dao.insertarOActualizar(sql)
         except Exception as e:
             print(e)
@@ -60,7 +59,6 @@ class Voluntario:
     def mostrarDatos(self):
         print('Nombre:',self.nombre)
         print('Apellido:',self.apellido)
-        print('Tel.:',self.tel)
         print('Celular:',self.celular)
         print('Dirección:',self.direccion)
         print('Sexo:',self.sexo)
@@ -88,14 +86,13 @@ class Voluntario:
     def mostrarDatosAbuelo(self, abuelo):
         try:
             dao = DAO()
-            sql = f"SELECT nombre, apellido, celular, tel FROM abuelo WHERE usuario = '{abuelo}';"
+            sql = f"SELECT nombre, apellido, celular FROM abuelo WHERE usuario = '{abuelo}';"
             datos = dao.recuperarRegistro(sql)
             print(
                 'Datos del abuelo para que pueda comunicarse:\n'
                 'Nombre:',datos[0],'\n'
                 'Apellido:',datos[1],'\n'
-                'Celular:',datos[2],'\n'
-                'Tel.:',datos[3],
+                'Celular:',datos[2],
                     )
         except Exception as e:
             print(e)

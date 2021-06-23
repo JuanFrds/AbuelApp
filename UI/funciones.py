@@ -2,6 +2,7 @@ from math import atan2, radians, cos, sin, asin, sqrt, trunc
 from geopy.format import LATIN1_DEGREE
 from geopy.geocoders import Nominatim
 from geopy.distance import great_circle
+import getpass
 
 # CREE UNA VARIABLE 'GLOBAL' PARA NO TENER QUE DECLARARLA EN CADA METODO
 ok = False
@@ -69,6 +70,15 @@ def elegir_sexo():
 
         except ValueError:
             print("\nERROR. ESPACIO EN BLANCO\n")
+
+def verificar_usuario():
+    usr = input('\nIngrese un nombre de usuario:')
+    if usr == '' or usr.isspace():
+        print('\nEl nombre de usuario no puede estar vacio. Intente de vuelta.')
+        verificar_usuario()
+    else:
+        return usr
+
 #Formula que calcula la distancia en KM entre 2 puntos en la tierra:
 def haversine(latlon1,latlon2):
     R = 6372.8
@@ -96,7 +106,7 @@ def verificarDireccion():
     try:
         geolocator = Nominatim(user_agent='AbuelApp')
         direccion = input(
-                '*Siga el siguiente formato: Calle y numero, Barrio (opcional), Localidad, Departamento, Provincia\n'
+                '\n*Siga el siguiente formato: Calle y numero, Barrio (opcional), Localidad, Departamento, Provincia\n'
                 'Ingrese dirección: '
                 )
         loc = geolocator.geocode(direccion)
@@ -106,19 +116,40 @@ def verificarDireccion():
         print('Dirección incorrecta. Verifique y vuelva a ingresarla.')
         verificarDireccion()
 
-def verificar_contra(contra):
+def analizar_contra(contra):
     contra = str(contra)
-    if contra == '' or len(contra) < 8:
+    if contra.isspace() or len(contra) < 8:
         return False
     else:
         return True
         
 
 def ingresoContra():
-    contra = str(input('Ingrese un contraseña:'))
-    if verificar_contra(contra):
+    contra = getpass.getpass('\nIngrese una contraseña:')
+    if analizar_contra(contra):
         return contra
     else:
-        print('La contraseña no puede tener menos de 8 caracteres. Intente de nuevo.')
+        print('La contraseña no puede tener menos de 8 caracteres ni tener solo espacios vacios. Intente de nuevo.')
         ingresoContra()
+
+def verificar_celular():
+    cel = input('Ingrese un numero de celular:')
+    if cel.isnumeric:
+        return cel
+    else:
+        print('El celular solo puede contener numeros. Intente de nuevo.')
+        verificar_celular()
+        
+# def hashearContra():
+#     contra = ingresoContra()
+#     contra = contra.encode('utf-8')
+#     sal = bcrypt.gensalt()
+#     contraHash = bcrypt.hashpw(contra,sal)
+#     return contraHash
+
+# def verificarContra(contra, contraMysql):
+#     contra = contra.encode('utf-8')
+#     sal = bcrypt.gensalt()
+#     verif = bcrypt.checkpw(contra, contraMysql)
+#     return verif
 
