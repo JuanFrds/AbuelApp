@@ -4,7 +4,7 @@ USE `AbuelApp` ;
 
 CREATE TABLE `abuelo` (
   `usuario` varchar(255) NOT NULL,
-  `contra` varchar(255) NOT NULL,
+  `contra` BINARY(60) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL,
   `celular` varchar(255) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE `abuelo` (
 
 CREATE TABLE `voluntario` (
   `usuario` varchar(255) NOT NULL,
-  `contra` varchar(255) NOT NULL,
+  `contra` BINARY(60) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL,
   `celular` varchar(255) NOT NULL,

@@ -1,17 +1,20 @@
 from DB.conexion import DAO
+from UI import funciones
 
 
 class Voluntario:
 
     def __init__(self, usuario, contra, nombre, apellido, celular, direccion, sexo):
         self.usuario = usuario
+        contra = funciones.hashearContra(contra)
+        contra = contra.decode('utf-8')
         self.contra = contra
         self.nombre = nombre
         self.apellido = apellido
         self.celular = celular
         self.direccion = direccion
         self.sexo = sexo
-        self.disponibilidad = 0  
+        self.disponibilidad = 0
         self.peticionAyuda = None
 
     def iniciar_sesion(usuario):
@@ -19,25 +22,27 @@ class Voluntario:
             dao = DAO()
             sql = f'select contra, nombre, apellido, celular, direccion, sexo, disponibilidad from voluntario where usuario=\'{usuario}\';'
             lista = dao.recuperarRegistro(sql)
-            return Voluntario(usuario,lista[0],lista[1],lista[2],lista[3],lista[4], lista[5])
+            contra = bytes((lista[0]))
+            contra = contra.decode('utf-8')
+            return Voluntario(usuario, contra, lista[1], lista[2], lista[3], lista[4], lista[5])
         except Exception as e:
-            print(e)     
+            print(e)
 
     def resgistrarse(self):
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "INSERT INTO voluntario (usuario, contra, nombre, apellido, celular, direccion, sexo, disponibilidad) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','0');"
+            sql = "INSERT INTO voluntario (usuario, contra, nombre, apellido, celular, direccion, sexo, disponibilidad) VALUES ('{0}',\"{1}\",'{2}','{3}','{4}','{5}','{6}','0');"
             sql = sql.format(self.usuario, self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo)
             dao.insertarOActualizar(sql)
         except Exception as e:
-            print(e) 
+            print(e)
 
     def guardar_cambios(self):
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "UPDATE voluntario SET contra = '{0}', nombre = '{1}', apellido = '{2}', celular = '{4}', direccion = '{5}', sexo = '{6}' WHERE usuario = '{7}';"
+            sql = "UPDATE voluntario SET contra = \"{0}\", nombre = '{1}', apellido = '{2}', celular = '{4}', direccion = '{5}', sexo = '{6}' WHERE usuario = '{7}';"
             sql = sql.format(self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo, self.usuario)
             dao.insertarOActualizar(sql)
         except Exception as e:
@@ -57,18 +62,18 @@ class Voluntario:
             print(e)
 
     def mostrarDatos(self):
-        print('Nombre:',self.nombre)
-        print('Apellido:',self.apellido)
-        print('Celular:',self.celular)
-        print('Dirección:',self.direccion)
-        print('Sexo:',self.sexo)
+        print('Nombre:', self.nombre)
+        print('Apellido:', self.apellido)
+        print('Celular:', self.celular)
+        print('Dirección:', self.direccion)
+        print('Sexo:', self.sexo)
 
     def mostrarDisponibilidad(self):
         try:
             dao = DAO()
             disp = dao.recuperarRegistro(f"select disponibilidad from voluntario where usuario = '{self.usuario}';")
             if disp[0] == 0:
-                return 'No disponible' 
+                return 'No disponible'
             else:
                 return 'Disponible'
         except Exception as e:
@@ -90,10 +95,10 @@ class Voluntario:
             datos = dao.recuperarRegistro(sql)
             print(
                 'Datos del abuelo para que pueda comunicarse:\n'
-                'Nombre:',datos[0],'\n'
-                'Apellido:',datos[1],'\n'
-                'Celular:',datos[2],
-                    )
+                'Nombre:', datos[0], '\n'
+                                     'Apellido:', datos[1], '\n'
+                                                            'Celular:', datos[2],
+            )
         except Exception as e:
             print(e)
 
@@ -109,20 +114,22 @@ class Voluntario:
                 resp = input()
                 if resp == '1':
                     self.mostrarDatosAbuelo(peticion[0])
-                    dao.insertarOActualizar(f'UPDATE abuelo SET ayudante = \'{self.usuario}\' WHERE usuario = \'{peticion[0]}\';')
+                    dao.insertarOActualizar(
+                        f'UPDATE abuelo SET ayudante = \'{self.usuario}\' WHERE usuario = \'{peticion[0]}\';')
                 elif resp == '2':
                     dao.insertarOActualizar(f'UPDATE abuelo SET ayudante = \'0\' WHERE usuario = \'{peticion[0]}\';')
             else:
                 print('No tiene ninguna petición de ayuda.')
         except Exception as e:
             print(e)
-    
+
+    # UNA VEZ COMPLETADA LA ACCION DE LA AYUDA, LIMPIA LA PETICION DE AYUDA
     def ayudaCompletadaORechazada(self):
         try:
             dato = 'NULL'
             dao = DAO()
             sql = "UPDATE voluntario SET peticionAyuda = {0} WHERE usuario = '{1}';"
-            sql = sql.format(str(dato),self.usuario)
+            sql = sql.format(str(dato), self.usuario)
             dao.insertarOActualizar(sql)
         except Exception as e:
             print(e)
@@ -131,11 +138,10 @@ class Voluntario:
     def verificar_login(usuario, contra):
         try:
             dao = DAO()
-            sql = f"SELECT contra FROM voluntario WHERE usuario='{usuario}' AND contra='{contra}';"
-            if dao.recuperarRegistro(sql):
-                return True
-            else:
-                return False
+            sql = f"SELECT contra FROM voluntario WHERE usuario='{usuario}';"
+            contraRecuperada = dao.recuperarRegistro(sql)
+            contraMysql = bytes((contraRecuperada[0]))
+            return funciones.verificarContra(contra, contraMysql)
         except Exception as e:
             print(e)
 
