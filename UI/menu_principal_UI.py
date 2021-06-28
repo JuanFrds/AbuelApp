@@ -34,57 +34,58 @@ class MenuPrincipal:
             else:
                 print('\nOpción incorrecta')
 
-    # ABUELO
+    # INICIO DE SESION
     def opcion1(self):
         print('\nComo quiere ingresar:')
         print(
-            'Opcion 1:\tComo abuelo\n'+
-            'Opcion 2:\tComo voluntario\n'+
+            'Opcion 1:\tComo abuelo\n' +
+            'Opcion 2:\tComo voluntario\n' +
             'Opcion 3:\tSalir')
         resp = input('\nSeleccione opción: ')
 
+        # PIDE EL USUARIO Y CONTRASEÑA Y VERIFICA QUE COINCIDAN PARA INICIAR SESIÓN
         if resp == '1':
             usuario = input('\nIngrese su usuario: ')
             contra = getpass.getpass('\nIngrese su contraseña: ')
-            if Abuelo.verificar_login(usuario,contra):
+            if Abuelo.verificar_login(usuario, contra):
                 menuAbuelo = menu_abuelo_UI.MenuAbuelo(usuario)
                 menuAbuelo.imprimirMenu()
-            else: 
+            else:
                 print('Usuario o contraseña incorrecta')
         elif resp == '2':
             usuario = input('\nIngrese su usuario: ')
             contra = getpass.getpass('\nIngrese su contraseña: ')
-            if Voluntario.verificar_login(usuario,contra):
+            if Voluntario.verificar_login(usuario, contra):
                 menuVoluntario = menu_voluntario_UI.MenuVoluntario(usuario)
                 menuVoluntario.imprimirMenu()
-            else: 
+            else:
                 print('\nUsuario o contraseña incorrecta')
         elif resp == '3':
             print('\nVolviendo al menu principal')
         else:
             print('\nOpción incorrecta')
-            self.opcion1()
+            return self.opcion1()
 
     # REGISTRO
     def opcion2(self):
         print('\nComo quiere registrarse:')
         print(
-            'Opcion 1:\tComo abuelo\n'+
+            'Opcion 1:\tComo abuelo\n' +
             'Opcion 2:\tComo voluntario\n'
             'Opcion 3:\tSalir'
-            )
+        )
         resp = input('\nSeleccione opción: ')
-
+        # MEDIANTE UNA LISTA RETORNADA CREA UN OBJETO Y SUBE LOS DATOS A LA BASE DE DATOS
         if resp == '1':
             lista = abuelo_UI.Registro()
-            abuelo = Abuelo(lista[0],lista[1],lista[2],lista[3],lista[4],lista[5],lista[6])
+            abuelo = Abuelo(lista[0], lista[1], lista[2], lista[3], lista[4], lista[5], lista[6])
             abuelo.resgistrarse()
             abuelo = None
             menuAbuelo = menu_abuelo_UI.MenuAbuelo(lista[0])
             menuAbuelo.imprimirMenu()
         elif resp == '2':
             lista = voluntario_UI.Registro()
-            voluntario = Voluntario(lista[0],lista[1],lista[2],lista[3],lista[4],lista[5],lista[6])
+            voluntario = Voluntario(lista[0], lista[1], lista[2], lista[3], lista[4], lista[5], lista[6])
             voluntario.resgistrarse()
             voluntario = None
             menuVoluntario = menu_voluntario_UI.MenuVoluntario(lista[0])
@@ -93,12 +94,8 @@ class MenuPrincipal:
             print('\nVolviendo al menu principal')
         else:
             print('\nOpción incorrecta')
-            self.opcion2()
+            return self.opcion2()
 
-    # PEDIDOS DE AYUDA
-    # def opcion3(self):
-    #     pass
-    # MENSAJE DE SALIDA
     def opcion3(self):
         print("\nGRACIAS POR USAR ABUELAPP")
         input("\nPRESIONE ENTER PARA CONTINUAR...")

@@ -1,13 +1,11 @@
-from urllib.request import install_opener
+from BACK_END.voluntario import Voluntario
 from UI import funciones
 from UI import voluntario_UI
-from BACK_END.voluntario import Voluntario
-
 
 
 class MenuVoluntario:
 
-    def __init__(self,usuario):
+    def __init__(self, usuario):
         self.voluntario = Voluntario.iniciar_sesion(usuario)
         self.opcion = 0
 
@@ -21,7 +19,7 @@ class MenuVoluntario:
             print("Opción 1:\t Ver mi perfil")
             print("Opción 2:\t Modificar perfil")
             print("Opción 3:\t Cambiar disponibilidad")
-            print("Opción 4:\t Recargar")
+            print("Opción 4:\t Recargar para verificar si hay peticiones de ayuda")
             print("Opción 5:\t Eliminar usuario")
             print("Opción 6:\t Salir\n")
             print(voluntario_UI.mensajeDisponibilidad(self.voluntario))
@@ -33,7 +31,7 @@ class MenuVoluntario:
                     function()
                 else:
                     print('\nOpción incorrecta')
-            else: 
+            else:
                 print('\nOpción incorrecta')
 
     def opcion1(self):

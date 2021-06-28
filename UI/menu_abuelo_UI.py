@@ -8,6 +8,7 @@ class MenuAbuelo:
     def __init__(self, usuario):
         self.abuelo = Abuelo.iniciar_sesion(usuario)
         self.opcion = 0
+
     def imprimirMenu(self):
         opciones = {1: self.opcion1, 2: self.opcion2, 3: self.opcion3, 4: self.opcion4, 5: self.opcion5}
 
@@ -19,8 +20,6 @@ class MenuAbuelo:
             print("Opción 3:\t Solicitar ayuda")
             print("Opción 4:\t Eliminar usuario")
             print("Opción 5:\t Salir")
-            # print("Opción 6:\t Solicitar ayuda")
-            # print("Opción 7:\t REGRESAR AL MENU PRINCIPAL")
             self.opcion = input("\nSeleccione opción: ")
 
             if self.opcion.isnumeric():

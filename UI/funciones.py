@@ -3,6 +3,8 @@ from geopy.format import LATIN1_DEGREE
 from geopy.geocoders import Nominatim
 from geopy.distance import great_circle
 import getpass
+import os
+import bcrypt
 
 # CREE UNA VARIABLE 'GLOBAL' PARA NO TENER QUE DECLARARLA EN CADA METODO
 ok = False
@@ -12,6 +14,7 @@ def limpiarConsola():
     print('\n')
 
 
+# CONFIRMA EL MENSAJE PASADO POR PARAMETRO
 def menuConfirmacion(mensaje):
     opcion = input(mensaje + "\nPresione '1' para confirmar u otra tecla para cancelar.\n")
 
@@ -26,6 +29,8 @@ def menuConfirmacion(mensaje):
         print("Cancelado por el usuario.")
         return False
 
+
+# VERIFICA EL NOMBRE O APELLIDO
 def verificar_nombreApellido(nombre_apellido):
     while not ok:
         nombre = input("\nIngrese {}: ".format(nombre_apellido)).title()
@@ -46,6 +51,7 @@ def verificar_nombreApellido(nombre_apellido):
             return nombre
 
 
+# DA OPCIONES PARA QUE EL USUARIO ELIJA EL SEXO
 def elegir_sexo():
     lista_sexos = ["MASCULINO", "FEMENINO", "INDEFINIDO"]
 
@@ -71,16 +77,19 @@ def elegir_sexo():
         except ValueError:
             print("\nERROR. ESPACIO EN BLANCO\n")
 
+
+# VERIFICA QUE EL USUARIO NO ESTE VACIO Y/O SOLO CON ESPACIOS
 def verificar_usuario():
     usr = input('\nIngrese un nombre de usuario:')
     if usr == '' or usr.isspace():
         print('\nEl nombre de usuario no puede estar vacio. Intente de vuelta.')
-        verificar_usuario()
+        return verificar_usuario()
     else:
         return usr
 
-#Formula que calcula la distancia en KM entre 2 puntos en la tierra:
-def haversine(latlon1,latlon2):
+
+# ESTA FORMULA CALCULA LA DISTANCIA ENTRE DOS PUNTOS DE LA TIERRA MEDIANTE LA LATITUD Y LONGITUD
+def haversine(latlon1, latlon2):
     R = 6372.8
 
     latD = radians(latlon2[0] - latlon1[0])
@@ -89,67 +98,68 @@ def haversine(latlon1,latlon2):
     lat1 = radians(latlon1[0])
     lat2 = radians(latlon2[0])
 
-    a = sin(latD/2)**2 + cos(lat1) * cos(lat2) * sin(lonD/2)**2
-    c = 2 * atan2(sqrt(a),sqrt(1-a))
+    a = sin(latD / 2) ** 2 + cos(lat1) * cos(lat2) * sin(lonD / 2) ** 2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
     d = R * c
 
     return d
 
+
+# RETORNA LA LATITUD Y LONGITUD DE LA DIRECCION INGRESADA
 def latitudLongitud(direccion):
     geolocator = Nominatim(user_agent='AbuelApp')
     loc = geolocator.geocode(direccion)
-    list = [loc.latitude,loc.longitude]
+    list = [loc.latitude, loc.longitude]
     return list
 
+
+# VERIFICA QUE LA DIRECCION SEA CORRECTA
 def verificarDireccion():
     try:
         geolocator = Nominatim(user_agent='AbuelApp')
-        direccion = input(
-                '\n*Siga el siguiente formato: Calle y numero, Barrio (opcional), Localidad, Departamento, Provincia\n'
-                'Ingrese dirección: '
-                )
+        print('\n*Siga el siguiente formato: Calle y numero, Barrio (opcional), Localidad (opcional), Departamento, Provincia')
+        direccion = input('Ingrese dirección: ')
         loc = geolocator.geocode(direccion)
-        if loc.address:
-            return direccion
+        loc = loc.address
+        return direccion
     except Exception as e:
         print('Dirección incorrecta. Verifique y vuelva a ingresarla.')
-        verificarDireccion()
+        return verificarDireccion()
 
+
+# VERIFICA QUE LA CONTRASEÑA NO TENGA MENOS DE 8 CARACTERES
 def analizar_contra(contra):
     contra = str(contra)
     if contra.isspace() or len(contra) < 8:
         return False
     else:
         return True
-        
 
+
+# PIDE LA CONTRASEÑA
 def ingresoContra():
     contra = getpass.getpass('\nIngrese una contraseña:')
     if analizar_contra(contra):
         return contra
     else:
         print('La contraseña no puede tener menos de 8 caracteres ni tener solo espacios vacios. Intente de nuevo.')
-        ingresoContra()
+        return ingresoContra()
 
+
+# VERIFICA QUE EL CELULAR CONTENGA SOLO NUMEROS
 def verificar_celular():
     cel = input('Ingrese un numero de celular:')
-    if cel.isnumeric:
+    if cel.isnumeric():
         return cel
     else:
         print('El celular solo puede contener numeros. Intente de nuevo.')
-        verificar_celular()
-        
-# def hashearContra():
-#     contra = ingresoContra()
-#     contra = contra.encode('utf-8')
-#     sal = bcrypt.gensalt()
-#     contraHash = bcrypt.hashpw(contra,sal)
-#     return contraHash
+        return verificar_celular()
 
-# def verificarContra(contra, contraMysql):
-#     contra = contra.encode('utf-8')
-#     sal = bcrypt.gensalt()
-#     verif = bcrypt.checkpw(contra, contraMysql)
-#     return verif
+def hashearContra(contra):
+    contraHash = bcrypt.hashpw(contra.encode('utf-8'),bcrypt.gensalt())
+    return contraHash
 
+def verificarContra(contra, contraMysql):
+    verif = bcrypt.checkpw(contra.encode('utf-8'), contraMysql)
+    return verif
