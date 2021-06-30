@@ -5,6 +5,7 @@ from geopy.distance import great_circle
 import getpass
 import os
 import bcrypt
+import time
 
 # CREE UNA VARIABLE 'GLOBAL' PARA NO TENER QUE DECLARARLA EN CADA METODO
 ok = False
@@ -18,37 +19,42 @@ def limpiarConsola():
 def menuConfirmacion(mensaje):
     opcion = input(mensaje + "\nPresione '1' para confirmar u otra tecla para cancelar.\n")
 
-    while not opcion or opcion.isspace():
-        print("ERROR. INTENTE NUEVAMENTE.")
-        opcion = input("Presione '1' para confirmar u otra tecla para cancelar.\n")
-
-    # UNA VEZ QUE TERMINA LA VERIFICACION, CASTEO OPCION A ENTERO PARA CONTINUAR
-    if int(opcion) == 1:
+    if opcion == '1':
         return True
     else:
+        os.system('clear')
         print("Cancelado por el usuario.")
+        time.sleep(1)
         return False
 
 
 # VERIFICA EL NOMBRE O APELLIDO
 def verificar_nombreApellido(nombre_apellido):
     while not ok:
-        nombre = input("\nIngrese {}: ".format(nombre_apellido)).title()
+        os.system('clear')
+        nombre = input("Ingrese {}: ".format(nombre_apellido).title())
 
         # VERIFICAR LONGITUD
-        while len(nombre) <= 0 or len(nombre) > 30:
-            nombre = input(
-                "{} demasiado corto o largo.\nVuelva a ingresarlo: ".format(nombre_apellido.capitalize())).title()
+        if len(nombre) <= 0 or len(nombre) > 30:
+            os.system('clear')
+            print("{} demasiado corto o largo. Intente de nuevo".format(nombre_apellido).title())
+            time.sleep(1)
+            return verificar_nombreApellido(nombre_apellido)
 
         # VERIFICAR QUE NO CONTENGA ESPACIOS VACIOS
-        while nombre.isspace():
-            nombre = input("{} no puede contener espacios vacíos.\nVuelva a ingresarlo: ".format(
-                nombre_apellido.capitalize())).title()
+        if nombre.isspace():
+            os.system('clear')
+            print("El {} no puede contener espacios vacíos. Intente de nuevo.".format(nombre_apellido).title())
+            time.sleep(1)
+            return verificar_nombreApellido(nombre_apellido)
 
-        print("\nUsted ha ingresado ", nombre)
+        os.system('clear')
+        print("Usted ha ingresado ", nombre)
 
         if menuConfirmacion("¿Es correcto el nombre ingresado?"):
             return nombre
+        else:
+            return verificar_nombreApellido(nombre_apellido)
 
 
 # DA OPCIONES PARA QUE EL USUARIO ELIJA EL SEXO
@@ -57,35 +63,45 @@ def elegir_sexo():
 
     while not ok:
         try:
-            limpiarConsola()
-            print("\nSELECCIONE SU SEXO:")
+            os.system('clear')
+            print("SELECCIONE SU SEXO:")
             print("1: MASCULINO\n2: FEMENINO\n3: INDEFINIDO")
             opcion = int(input("\nIngrese el número correspondiente a su sexo: "))
 
-            while opcion < 1 or opcion > 3:
-                opcion = int(
-                    input("\nOpción incorrecta.\nVuelva a ingresar el número correspondiente a su sexo: "))
+            if opcion < 1 or opcion > 3:
+                os.system('clear')
+                return elegir_sexo()
 
             #  SE LE RESTA 1 A LA LISTA PARA QUE COINCIDA CON LO QUE INGRESA EL USUARIO
             sexo = lista_sexos[opcion - 1]
-
-            print("\nEl sexo elegido es:", sexo)
+            os.system('clear')
+            print("El sexo elegido es:", sexo)
 
             if menuConfirmacion("¿Es correcto el sexo ingresado?"):
                 return sexo
-
+            else:
+                return elegir_sexo()
         except ValueError:
-            print("\nERROR. ESPACIO EN BLANCO\n")
+            pass
+            # print("\nERROR. ESPACIO EN BLANCO\n")
 
 
 # VERIFICA QUE EL USUARIO NO ESTE VACIO Y/O SOLO CON ESPACIOS
 def verificar_usuario():
-    usr = input('\nIngrese un nombre de usuario:')
+    os.system('clear')
+    usr = input('Ingrese un nombre de usuario:')
     if usr == '' or usr.isspace():
-        print('\nEl nombre de usuario no puede estar vacio. Intente de vuelta.')
+        os.system('clear')
+        print('El nombre de usuario no puede estar vacio. Intente de vuelta.')
+        time.sleep(1)
         return verificar_usuario()
     else:
-        return usr
+        os.system('clear')
+        print('El usuario ingresado es: {}'.format(usr))
+        if menuConfirmacion('¿Quiere continuar con ese nombre de usuario?'):
+            return usr
+        else:
+            return verificar_usuario()
 
 
 # ESTA FORMULA CALCULA LA DISTANCIA ENTRE DOS PUNTOS DE LA TIERRA MEDIANTE LA LATITUD Y LONGITUD
@@ -118,13 +134,21 @@ def latitudLongitud(direccion):
 def verificarDireccion():
     try:
         geolocator = Nominatim(user_agent='AbuelApp')
-        print('\n*Siga el siguiente formato: Calle y numero, Barrio (opcional), Localidad (opcional), Departamento, Provincia')
+        os.system('clear')
+        print('*Siga el siguiente formato: Calle y numero, Barrio (opcional), Localidad (opcional), Departamento, Provincia')
         direccion = input('Ingrese dirección: ')
         loc = geolocator.geocode(direccion)
         loc = loc.address
-        return direccion
+        os.system('clear')
+        print('La dirección ingresada es: {}'.format(direccion))
+        if menuConfirmacion('¿Quiere continuar con esa dirección?'):
+            return direccion
+        else:
+            return verificarDireccion()
     except Exception as e:
+        os.system('clear')
         print('Dirección incorrecta. Verifique y vuelva a ingresarla.')
+        time.sleep(1)
         return verificarDireccion()
 
 
@@ -139,21 +163,39 @@ def analizar_contra(contra):
 
 # PIDE LA CONTRASEÑA
 def ingresoContra():
-    contra = getpass.getpass('\nIngrese una contraseña:')
+    os.system('clear')
+    contra = getpass.getpass('Ingrese una contraseña: ')
     if analizar_contra(contra):
-        return contra
+        repeContra = getpass.getpass('\nVuela a ingresar la contraseña: ')
+        if contra == repeContra:
+            return contra
+        else:
+            os.system('clear')
+            print('Las contraseñas no coinciden. Intente de nuevo.')
+            time.sleep(1)
+            return ingresoContra()
     else:
+        os.system('clear')
         print('La contraseña no puede tener menos de 8 caracteres ni tener solo espacios vacios. Intente de nuevo.')
+        time.sleep(2)
         return ingresoContra()
 
 
 # VERIFICA QUE EL CELULAR CONTENGA SOLO NUMEROS
 def verificar_celular():
+    os.system('clear')
     cel = input('Ingrese un numero de celular:')
     if cel.isnumeric():
-        return cel
+        os.system('clear')
+        print('El celular ingresado es: {}'.format(cel))
+        if menuConfirmacion('¿Es correcto ese celular?'):
+            return cel
+        else:
+            return verificar_celular()
     else:
+        os.system('clear')
         print('El celular solo puede contener numeros. Intente de nuevo.')
+        time.sleep(1)
         return verificar_celular()
 
 def hashearContra(contra):

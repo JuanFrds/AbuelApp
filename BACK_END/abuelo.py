@@ -1,3 +1,4 @@
+import os
 from DB.conexion import DAO
 from BACK_END.voluntario import Voluntario
 from UI import funciones
@@ -43,8 +44,8 @@ class Abuelo:
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "UPDATE abuelo SET contra = \"{0}\", nombre = '{1}', apellido = '{2}', celular = '{3}', direccion = '{4}', sexo = '{5}' WHERE usuario = '{6}';"
-            sql = sql.format(self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo, self.usuario)
+            sql = "UPDATE abuelo SET nombre = '{0}', apellido = '{1}', celular = '{2}', direccion = '{3}', sexo = '{4}' WHERE usuario = '{5}';"
+            sql = sql.format(self.nombre, self.apellido, self.celular, self.direccion, self.sexo, self.usuario)
             dao.insertarOActualizar(sql)
         except Exception as e:
             print(e)
@@ -102,6 +103,7 @@ class Abuelo:
             sql = f"SELECT ayudante FROM abuelo WHERE usuario = '{self.usuario}';"
             ayudante = dao.recuperarRegistro(sql)
             if ayudante[0] != None and ayudante[0] != '0':
+                os.system('clear')
                 print(
                     '\n¡ATENCION! han respondido a su petición de ayuda:\n'
                     f'El usuario {ayudante[0]} ha aceptado su peticion de ayuda.'
@@ -109,8 +111,9 @@ class Abuelo:
                 self.mostrarDatosVoluntario(ayudante[0])
                 return 'aceptado'
             elif ayudante[0] == '0':
+                os.system('clear')
                 print('\n¡ATENCION! han respondido a su petición de ayuda')
-                print(f'\nEl voluntario {ayudante[0]} a rechazado su pedido')
+                print(f'\nEl voluntario a rechazado su pedido')
                 return 'rechazado'
             else:
                 return 'sigue'
@@ -137,7 +140,7 @@ class Abuelo:
             contraMysql = bytes((contraRecuperada[0]))
             return funciones.verificarContra(contra, contraMysql)
         except Exception as e:
-            print(e)
+            pass
 
     @staticmethod
     def verificar_usuarioDisponible(usuario):

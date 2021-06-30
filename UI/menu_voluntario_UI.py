@@ -1,7 +1,6 @@
 from BACK_END.voluntario import Voluntario
-from UI import funciones
 from UI import voluntario_UI
-
+import os
 
 class MenuVoluntario:
 
@@ -10,12 +9,11 @@ class MenuVoluntario:
         self.opcion = 0
 
     def imprimirMenu(self):
-        opciones = {1: self.opcion1, 2: self.opcion2, 3: self.opcion3, 4: self.opcion4, 5: self.opcion5,
-                    6: self.opcion6}
+        opciones = {1: self.opcion1, 2: self.opcion2, 3: self.opcion3, 4: self.opcion4, 5: self.opcion5}
 
         while self.opcion != '6':
-            funciones.limpiarConsola()
-            print(f"\n==={self.voluntario.usuario}===================")
+            os.system('clear')
+            print(f"==={self.voluntario.usuario}===================")
             print("Opción 1:\t Ver mi perfil")
             print("Opción 2:\t Modificar perfil")
             print("Opción 3:\t Cambiar disponibilidad")
@@ -26,13 +24,10 @@ class MenuVoluntario:
             self.opcion = input("\nSeleccione opción: ")
 
             if self.opcion.isnumeric():
-                if int(self.opcion) > 0 & int(self.opcion) <= 6:
+                if int(self.opcion) > 0 and int(self.opcion) < 6:
+                    os.system('clear')
                     function = opciones[int(self.opcion)]
                     function()
-                else:
-                    print('\nOpción incorrecta')
-            else:
-                print('\nOpción incorrecta')
 
     def opcion1(self):
         voluntario_UI.verMiPerfil(self.voluntario)
@@ -47,9 +42,8 @@ class MenuVoluntario:
         voluntario_UI.recargar(self.voluntario)
 
     def opcion5(self):
-        voluntario_UI.eliminarUsuario(self.voluntario)
-        self.opcion6()
-        self.opcion = '6'
+        elim = voluntario_UI.eliminarUsuario(self.voluntario)
+        # self.opcion6()
+        if elim:
+            self.opcion = '6'
 
-    def opcion6(self):
-        print('Saliendo...')

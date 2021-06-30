@@ -5,6 +5,8 @@ from UI import menu_voluntario_UI
 from UI import voluntario_UI
 from UI import abuelo_UI
 import getpass
+import os
+import time
 
 
 class MenuPrincipal:
@@ -17,7 +19,8 @@ class MenuPrincipal:
         opciones = {1: self.opcion1, 2: self.opcion2, 3: self.opcion3}
 
         while self.opcion != '3':
-            print("\n=== BIENVENIDO A ABUELAPP ===")
+            os.system('clear')
+            print("=== BIENVENIDO A ABUELAPP ===")
             print("Opción 1:\t INGRESAR")
             print("Opción 2:\t REGISTRARSE")
             # print("Opción 3:\t ")
@@ -27,52 +30,62 @@ class MenuPrincipal:
 
             if self.opcion.isnumeric():
                 if 0 < int(self.opcion) <= 4:
+                    os.system('clear')
                     function = opciones[int(self.opcion)]
                     function()
-                else:
-                    print('\nOpción incorrecta')
-            else:
-                print('\nOpción incorrecta')
-
+                    
     # INICIO DE SESION
     def opcion1(self):
-        print('\nComo quiere ingresar:')
+        print('Como quiere ingresar:')
         print(
             'Opcion 1:\tComo abuelo\n' +
             'Opcion 2:\tComo voluntario\n' +
-            'Opcion 3:\tSalir')
+            'Opcion 3:\tAtras')
         resp = input('\nSeleccione opción: ')
 
         # PIDE EL USUARIO Y CONTRASEÑA Y VERIFICA QUE COINCIDAN PARA INICIAR SESIÓN
         if resp == '1':
+            os.system('clear')
+            print('Ingresar como abuelo.')
             usuario = input('\nIngrese su usuario: ')
             contra = getpass.getpass('\nIngrese su contraseña: ')
             if Abuelo.verificar_login(usuario, contra):
                 menuAbuelo = menu_abuelo_UI.MenuAbuelo(usuario)
                 menuAbuelo.imprimirMenu()
             else:
-                print('Usuario o contraseña incorrecta')
+                os.system('clear')
+                print('Usuario o contraseña incorrecta.')
+                time.sleep(1)
+                os.system('clear')
+                return self.opcion1()
         elif resp == '2':
+            os.system('clear')
+            print('Ingresar como voluntario.')
             usuario = input('\nIngrese su usuario: ')
             contra = getpass.getpass('\nIngrese su contraseña: ')
             if Voluntario.verificar_login(usuario, contra):
                 menuVoluntario = menu_voluntario_UI.MenuVoluntario(usuario)
                 menuVoluntario.imprimirMenu()
             else:
-                print('\nUsuario o contraseña incorrecta')
+                os.system('clear')
+                print('Usuario o contraseña incorrecta.')
+                time.sleep(1)
+                os.system('clear')
+                return self.opcion1()
         elif resp == '3':
-            print('\nVolviendo al menu principal')
+            pass
         else:
-            print('\nOpción incorrecta')
+            # print('\nOpción incorrecta')
+            os.system('clear')
             return self.opcion1()
 
     # REGISTRO
     def opcion2(self):
-        print('\nComo quiere registrarse:')
+        print('Como quiere registrarse:')
         print(
             'Opcion 1:\tComo abuelo\n' +
             'Opcion 2:\tComo voluntario\n'
-            'Opcion 3:\tSalir'
+            'Opcion 3:\tAtras'
         )
         resp = input('\nSeleccione opción: ')
         # MEDIANTE UNA LISTA RETORNADA CREA UN OBJETO Y SUBE LOS DATOS A LA BASE DE DATOS
@@ -91,12 +104,12 @@ class MenuPrincipal:
             menuVoluntario = menu_voluntario_UI.MenuVoluntario(lista[0])
             menuVoluntario.imprimirMenu()
         elif resp == '3':
-            print('\nVolviendo al menu principal')
+            pass
         else:
-            print('\nOpción incorrecta')
+            os.system('clear')
             return self.opcion2()
 
     def opcion3(self):
-        print("\nGRACIAS POR USAR ABUELAPP")
-        input("\nPRESIONE ENTER PARA CONTINUAR...")
+        print("GRACIAS POR USAR ABUELAPP")
+        time.sleep(1)
         self.opcion = '3'

@@ -42,8 +42,8 @@ class Voluntario:
         # noinspection PyBroadException
         try:
             dao = DAO()
-            sql = "UPDATE voluntario SET contra = \"{0}\", nombre = '{1}', apellido = '{2}', celular = '{4}', direccion = '{5}', sexo = '{6}' WHERE usuario = '{7}';"
-            sql = sql.format(self.contra, self.nombre, self.apellido, self.celular, self.direccion, self.sexo, self.usuario)
+            sql = "UPDATE voluntario SET nombre = '{0}', apellido = '{1}', celular = '{2}', direccion = '{3}', sexo = '{4}' WHERE usuario = '{5}';"
+            sql = sql.format(self.nombre, self.apellido, self.celular, self.direccion, self.sexo, self.usuario)
             dao.insertarOActualizar(sql)
         except Exception as e:
             print(e)
@@ -143,8 +143,8 @@ class Voluntario:
             contraMysql = bytes((contraRecuperada[0]))
             return funciones.verificarContra(contra, contraMysql)
         except Exception as e:
-            print(e)
-
+            pass
+        
     @staticmethod
     def verificar_usuarioDisponible(usuario):
         try:

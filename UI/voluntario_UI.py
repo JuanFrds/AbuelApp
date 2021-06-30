@@ -1,10 +1,12 @@
 from BACK_END.voluntario import Voluntario  # IMPORT DE LA CLASE VOLUNTARIO
 from UI import funciones
+import os
+import time
 
 
 # PIDE LOS DATOS PARA EL REGISTRO Y LO RETORNA EN UNA LISTA
 def Registro():
-    usr = input('Ingrese un nombre de usuario:')
+    usr = funciones.verificar_usuario()
     if Voluntario.verificar_usuarioDisponible(usr):
         contra = funciones.ingresoContra()
         nombre = funciones.verificar_nombreApellido('nombre')
@@ -13,7 +15,9 @@ def Registro():
         direccion = funciones.verificarDireccion()
         sexo = funciones.elegir_sexo()
     else:
+        os.system('clear')
         print('Este nombre de usuario esta ocupado, elija otro.')
+        time.sleep(1)
         return Registro()
     lista_usr = [usr, contra, nombre, apellido, celular, direccion, sexo]
     return lista_usr
@@ -21,7 +25,7 @@ def Registro():
 
 # VE LOS DATOS DEL VOLUNTARIO
 def verMiPerfil(voluntario):
-    print('\nSus datos son los siguientes:\n')
+    print('Sus datos son los siguientes:\n')
     voluntario.mostrarDatos()
     continuar = input('\nOprima cualquier tecla para continuar...')
 
@@ -30,6 +34,7 @@ def verMiPerfil(voluntario):
 def modificarPerfil(voluntario):
     resp = ''
     while resp != '5':
+        os.system('clear')
         print('Selecione que datos desea modificar:')
         print(
             'Opción 1:\tNombre\n' +
@@ -41,28 +46,28 @@ def modificarPerfil(voluntario):
         resp = input()
         if resp == '1':
             nombre = funciones.verificar_nombreApellido('Nombre')
-            voluntario.nombre = nombre
+            os.system('clear')
             if funciones.menuConfirmacion('¿Seguro quiere modificar su nombre?'):
+                voluntario.nombre = nombre
                 voluntario.guardar_cambios()
         elif resp == '2':
             apellido = funciones.verificar_nombreApellido('Apellido')
-            voluntario.apellido = apellido
+            os.system('clear')
             if funciones.menuConfirmacion('¿Seguro quiere modificar su apellido?'):
+                voluntario.apellido = apellido
                 voluntario.guardar_cambios()
         elif resp == '3':
             celular = funciones.verificar_celular()
-            voluntario.celular = celular
+            os.system('clear')
             if funciones.menuConfirmacion('¿Seguro quiere modificar su celular?'):
+                voluntario.celular = celular
                 voluntario.guardar_cambios()
         elif resp == '4':
-            direccion = funciones.verificarDireccion()
-            voluntario.direccion = direccion
+            direccion = funciones.verificarDireccion()            
+            os.system('clear')
             if funciones.menuConfirmacion('¿Seguro quiere modificar su dirección?'):
+                voluntario.direccion = direccion
                 voluntario.guardar_cambios()
-        elif resp == '5':
-            print('Saliendo...')
-        else:
-            print('Tecla incorrecta.')
 
 
 # RECARGA VERIFICANDO SI ALGUN ABUELO LE HA SOLICITADO AYUDA
@@ -76,6 +81,9 @@ def recargar(voluntario):
 def eliminarUsuario(voluntario):
     if funciones.menuConfirmacion('¿Seguro que quiere eliminar su cuenta?'):
         voluntario.eliminarme()
+        return True
+    else:
+        return False
 
 
 # MUESTRA POR PANTALLA SI ESTA DISPONIBLE
