@@ -10,7 +10,8 @@ class DAO:
                 port=3306,
                 user='root',
                 password='mysqlutn',
-                db='AbuelApp'
+                db='AbuelApp',
+                auth_plugin='mysql_native_password'
             )
         except Error as ex:
             print("Error al intentar conexión: {0}", format(ex))
